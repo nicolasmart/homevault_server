@@ -22,26 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty(trim($_POST["username"]))) {
         $username_error = $messages['empty_username'];
     } else {
-        $sql = "SELECT name FROM users WHERE name = ?"; // Check for existing username
-        
-        if ($stmt = mysqli_prepare($link, $sql)) {
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
-            $param_username = trim($_POST["username"]);
-            
-            if (mysqli_stmt_execute($stmt)) {
-                mysqli_stmt_store_result($stmt);
-                
-                if (mysqli_stmt_num_rows($stmt) == 1) {
-                    $username_error = $messages['username_taken'];
-                } else {
-                    $username = trim($_POST["username"]);
-                }
-            } else {
-                echo $messages['generic_error'];
-            }
-
-            mysqli_stmt_close($stmt);
-        }
+        $username = trim($_POST["username"]);
     }
     
     // Validate password
@@ -64,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($username_error) && empty($password_error) && empty($confirm_password_error) && empty($user_role_error)) {
-        mysqli_query($link, "CREATE CREATE TABLE `users` (`name` varchar(255) DEFAULT NULL, `password` varchar(255) DEFAULT NULL, `folder_location` text NOT NULL, `user_role` int(11) NOT NULL DEFAULT '1');");
+        mysqli_query($link, "CREATE TABLE `users` (`name` varchar(255) DEFAULT NULL, `password` varchar(255) DEFAULT NULL, `folder_location` text NOT NULL, `user_role` int(11) NOT NULL DEFAULT '1');");
 
         $sql = "INSERT INTO users (name, password, user_role, folder_location) VALUES (?, ?, ?, ?)";
         

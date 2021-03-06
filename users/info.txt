@@ -1,0 +1,1 @@
+This is where HomeVault stores each account's cloud data.

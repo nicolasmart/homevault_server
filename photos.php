@@ -13,32 +13,35 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
     <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
     <style type="text/css">
         .row {
-        display: -ms-flexbox; /* IE 10 */
-        display: flex;
-        -ms-flex-wrap: wrap; /* IE 10 */
-        flex-wrap: wrap;
-        padding: 0 4px;
+          display: -ms-flexbox; /* IE 10 */
+          display: flex;
+          -ms-flex-wrap: wrap; /* IE 10 */
+          flex-wrap: wrap;
+          padding: 0 4px;
         }
 
         /* Create two equal columns that sits next to each other */
         .column {
-        -ms-flex: 10%; /* IE 10 */
-        flex: 10%;
-        width: 280px;
-        height: 280px;
-        padding: 0 4px;
+          -ms-flex: 10%; /* IE 10 */
+          flex: 10%;
+          width: 280px;
+          height: 280px;
+          padding: 0 4px;
         }
 
         .column img {
-        //margin-top: 8px;
-        vertical-align: middle;
-        margin-top: 40px;
-        margin-bottom: 40px;
+          vertical-align: middle;
+          margin-top: 4px;
+          margin-bottom: 4px;
+          width: 100%;
+          min-height:12vw;
+          max-height:12vw;
+          object-fit: cover;
         }
 
         body {
-            overflow-x: hidden;
-            background: none transparent;
+          overflow-x: hidden;
+          background: none transparent;
         }
     </style>
     <base target="_parent">
@@ -73,7 +76,7 @@ function correctImageOrientation($filename) {
               break;
           }  
           if ($deg) {
-            return " transform: rotate(-" . $deg . "deg); ";
+            //return " transform: rotate(-" . $deg . "deg); ";
           }
           //else return " width: 200px; ";
         }
@@ -110,28 +113,28 @@ $files_len = count($files);
 ?>
 <div class="row">
   <div class="column">
-    <?php for ($ii = 0; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 0; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
   <div class="column">
-    <?php for ($ii = 1; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 1; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
   <div class="column">
-    <?php for ($ii = 2; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 2; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
   <div class="column">
-    <?php for ($ii = 3; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 3; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
   <div class="column">
-    <?php for ($ii = 4; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 4; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
   <div class="column">
-    <?php for ($ii = 5; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 5; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
   <div class="column">
-    <?php for ($ii = 6; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 6; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
   <div class="column">
-    <?php for ($ii = 7; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.style.display=\'none\'" style="width:100%;' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
+    <?php for ($ii = 7; $ii<$files_len; $ii = $ii + 8) { $img_grid = correctImageOrientation($images_dir . $files[$ii]); echo '<a href="' . $images_dir . $files[$ii] . '"><img onerror="this.src=\'' . $images_dir . $files[$ii] . '\'" style="' . $img_grid . '" src="data:image/jpeg;base64,' . base64_encode(exif_thumbnail($images_dir . $files[$ii], $width, $height, $type)) . '"></a>'; }?>
   </div>
 </div>
 </div>
