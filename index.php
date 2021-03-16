@@ -131,7 +131,7 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
                 <input type="button" id="upload_overlay" class="btn btn-primary" value="<?php echo $messages['upload_file']; ?>">-->
             </form>
         </div>
-        <iframe src="file_manager.php" id="page-content" allowtransparency="true" frameBorder="0" style="flex: 1; width: 100%; z-index: -1;"></iframe>
+        <iframe src="file_manager.php" id="page-content" allowtransparency="true" frameBorder="0" style="flex: 1; width: 100%; z-index: 1;"></iframe>
     </div>  
     <script>
     $(document).ready(function() {
