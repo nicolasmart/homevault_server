@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if (mysqli_stmt_fetch($stmt)) {
                         if (password_verify($password, $hashed_password)) {
                             if (strpos($_POST['directory'], '../') !== false) return;
-                            $GLOBALS['images_dir'] = $images_dir = '../' . $folder_location . '/photos' . '/' . $_POST["directory"];
+                            $GLOBALS['images_dir'] = $images_dir = '../' . $folder_location . '/photos' . '/';
                             /**$files = glob($images_dir + '/*.{jpg,png,gif,jpeg}', GLOB_BRACE);
                             usort($files, function($a, $b) {
                                 return filemtime($b) - filemtime($a);

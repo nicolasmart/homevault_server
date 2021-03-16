@@ -93,11 +93,11 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
         <div class="btn-group">
             <input type="image" src="res/drawables/md_long_hamburger_button.svg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" id="main_nav">
-                <a class="dropdown-item active" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='file_manager.php';">Файлове</a>
-                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='photos.php';">Снимки</a>
+                <a class="dropdown-item active" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='file_manager.php'; document.title = '<?php echo $messages['home_files']; ?> - HomeVault';">Файлове</a>
+                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='photos.php'; document.title = 'Снимки - HomeVault';">Снимки</a>
                 <a class="dropdown-item" href="#">Музика</a>
-                <a class="dropdown-item" href="#">Бележки</a>
-                <a class="dropdown-item" href="#">Пароли</a>
+                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='notes.php'; document.title = 'Бележки - HomeVault';">Бележки</a>
+                <!--<a class="dropdown-item" href="#">Пароли</a>-->
                 <!--<div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Настройки</a>-->
             </div>
@@ -153,6 +153,13 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
             document.getElementById("new_folder").value = folder_name;
             document.getElementById("create_folder").submit();
         }
+    }
+
+    function hideIframe() {
+        $("#page-content").hide();
+    }
+    function showIframe() {
+        $("#page-content").show();
     }
 
     </script>    

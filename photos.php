@@ -26,16 +26,19 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
           flex: 10%;
           width: 280px;
           height: 280px;
-          padding: 0 4px;
+          
         }
 
         .column img {
           vertical-align: middle;
-          margin-top: 4px;
-          margin-bottom: 4px;
-          width: 100%;
+          /*margin-top: 4px;
+          margin-bottom: 4px;*/
           min-height:12vw;
           max-height:12vw;
+          min-width:12vw;
+          max-width:12vw;
+          padding: 4px 0px 4px 0px;
+          
           object-fit: cover;
         }
 
@@ -76,9 +79,9 @@ function correctImageOrientation($filename) {
               break;
           }  
           if ($deg) {
-            //return " transform: rotate(-" . $deg . "deg); ";
+            return " transform: rotate(-" . $deg . "deg); " . ($deg!=180 ? "padding-left: 4px; padding-right: 4px;" : "");
           }
-          //else return " width: 200px; ";
+          else return " width: 200px; padding-top: 4px; padding-bottom: 4px;";
         }
       }
     }

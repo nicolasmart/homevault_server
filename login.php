@@ -92,19 +92,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (mysqli_stmt_execute($stmt)) {
                 mysqli_stmt_store_result($stmt);
-                if (mysqli_stmt_num_rows($stmt) == 1) { // Check for existing username
+                if (mysqli_stmt_num_rows($stmt) == 1) {
                     mysqli_stmt_bind_result($stmt, $username, $hashed_password, $user_role, $folder_location);
                     if (mysqli_stmt_fetch($stmt)) {
                         if (password_verify($password, $hashed_password)) {
-                            // Password is correct; Starting a new session
                             session_start();
                             
                             $_SESSION["logged_in"] = true;
                             $_SESSION["username"] = $username;
                             $_SESSION["user_role"] = $user_role;
                             $_SESSION["folder_loc"] = $folder_location;               
-                            // TODO: https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php
-                            // Redirect user to the main page
+                            
                             echo "<script>window.location.href = 'index.php';
                             </script>";
                         } else {

@@ -6,7 +6,7 @@
 
 HomeVault is a cloud storage service you can easily host at home. The server part works on any platform that supports PHP and MySQL. The apps offer file storage, automatic photo backup and more coming soon.
 
-If you're looking for the client apps, the server includes a web based one, acessible at the default HTTP port and you can use the same address in the [HomeVault Android app](https://github.com/nicolasmart/homevault_client_android) and the [HomeVault iOS app](https://github.com/nicolasmart/homevault_client_ios).
+If you're looking for the client apps, the server includes a web based one, acessible at the default HTTP port and you can use the same address in the [HomeVault Android app](https://github.com/nicolasmart/homevault_client_android).
 
 ### Setup instructions for the major platforms
 
@@ -15,7 +15,7 @@ To get started with HomeVault, you simply need to get a PHP server and an empty 
 Luckily all of that is much easier to do than it sounds.
 
 #### Platforms with an available snapshot (the HomeVault snapshot eliminates the need for any setup and just runs the server on `localhost`):
-- [Windows](https://github.com/nicolasmart/homevault_server_windows_easyphp)
+- [Windows](https://github.com/nicolasmart/homevault_server_windows)
 
 #### Instructions for a PHP and MySQL setup on other platforms:
 - [Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-20-04)

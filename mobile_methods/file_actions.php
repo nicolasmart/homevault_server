@@ -8,7 +8,34 @@ $password = "";
 $username_error = "";
 $password_error = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST['logged_in']) && $_POST['logged_in']=='1') {
+    session_start();
+    if (strpos($_POST['directory'], '../') !== false) return;
+    $folder_location = $_SESSION['folder_loc'];
+    $dir1 = '../' . $folder_location . '/' . $_POST['directory'];
+    echo $dir1;
+    if ($_POST['action'] == '1') {
+        if (strpos($_POST['directory2'], '../') !== false) return;
+        $dir2 = '../' . $folder_location . '/files' . '/' . $_POST['directory2'];
+        rename($dir1, $dir2 . '/' . basename($dir1));
+    }
+    if ($_POST['action'] == '2') {
+        if (strpos($_POST['directory2'], '../') !== false) return;
+        $dir2 = '../' . $folder_location . '/files' . '/' . $_POST['directory2'];
+        if (is_dir($dir1)) recurseCopy($dir1, $dir2);
+        else copy($dir1, $dir2 . '/' . basename($dir1));
+    }
+    if ($_POST['action'] == '3') {
+        if (is_dir($dir1)) deleteDirectory($dir1);
+        else unlink($dir1);
+    }
+    if ($_POST['action'] == '4') {
+        if (strpos($_POST['directory2'], '/') !== false) return;
+        $dir2 = dirname($dir1) . '/' . $_POST['directory2'];
+        rename($dir1, $dir2);
+    }
+}
+else if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty(trim($_POST["username"]))) {
         echo $messages['empty_username'];
@@ -43,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             /// 2 = Copy
                             /// 3 = Delete
                             if (strpos($_POST['directory'], '../') !== false) return;
-                            $dir1 = '../' . $folder_location . '/files' . $_POST['directory'];
+                            $dir1 = '../' . $folder_location . '/files' . '/' . $_POST['directory'];
                             if ($_POST['action'] == '1') {
                                 if (strpos($_POST['directory2'], '../') !== false) return;
                                 $dir2 = '../' . $folder_location . '/files' . '/' . $_POST['directory2'];
