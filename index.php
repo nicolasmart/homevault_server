@@ -93,9 +93,9 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
         <div class="btn-group">
             <input type="image" src="res/drawables/md_long_hamburger_button.svg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" id="main_nav">
-                <a class="dropdown-item active" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='file_manager.php'; document.title = '<?php echo $messages['home_files']; ?> - HomeVault';">Файлове</a>
+                <a class="dropdown-item active" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='file_manager.php'; document.title = '<?php echo $messages['home_files']; ?> - HomeVault';"><?php echo $messages['home_files']; ?></a>
                 <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='photos.php'; document.title = 'Снимки - HomeVault';">Снимки</a>
-                <a class="dropdown-item" href="#">Музика</a>
+                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='music.php'; document.title = 'Музика - HomeVault';">Музика</a>
                 <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='notes.php'; document.title = 'Бележки - HomeVault';">Бележки</a>
                 <!--<a class="dropdown-item" href="#">Пароли</a>-->
                 <!--<div class="dropdown-divider"></div>
@@ -134,26 +134,26 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
         <iframe src="file_manager.php" id="page-content" allowtransparency="true" frameBorder="0" style="flex: 1; width: 100%; z-index: 1;"></iframe>
     </div>  
     <script>
-    $(document).ready(function() {
+    /**$(document).ready(function() {
         $('body').css('display', 'none');
         $('body').fadeIn(600);
         $("#file").change(function(){
             document.getElementById("file_upload").submit();
         });
-    });
-    document.getElementById('upload_overlay').addEventListener('click', openDialog);
-    document.getElementById('add_folder').addEventListener('click', createFolder);
+    });*/
+    //document.getElementById('upload_overlay').addEventListener('click', openDialog);
+    //document.getElementById('add_folder').addEventListener('click', createFolder);
 
-    function openDialog() {
-        document.getElementById('file').click();
-    }
-    function createFolder() {
+    //function openDialog() {
+    //    document.getElementById('file').click();
+    //}
+    /**function createFolder() {
         var folder_name = prompt('<?php echo $messages['create_folder_name_desc']; ?>', '<?php echo $messages['create_folder']; ?>'); // TODO: Get rid of this js prompt cause it's just lazy
         if (folder_name != null) {
             document.getElementById("new_folder").value = folder_name;
             document.getElementById("create_folder").submit();
         }
-    }
+    }*/
 
     function hideIframe() {
         $("#page-content").hide();

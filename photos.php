@@ -6,7 +6,7 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
 <html>
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $messages['home_files']; ?> - HomeVault</title>
+    <title>HomeVault</title>
     <!-- TODO: Switch to local instead of CDN cause Seray would be mad otherwise; 
          TODO 2: Add a common header -->
     <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css"> 

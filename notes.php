@@ -6,7 +6,7 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
 <html>
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $messages['home_files']; ?> - HomeVault</title>
+    <title>HomeVault</title>
     <!-- TODO: Switch to local instead of CDN cause Seray would be mad otherwise; 
          TODO 2: Add a common header -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
@@ -50,16 +50,22 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
           color: #FFF;
           border-radius: 50px;
           text-align: center;
-          box-shadow: 2px 2px 3px #999;
+          box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.2);
         }
         .floating-button {
           margin-top: 22px;
         }
         a {
-          color: #555;
+          <?php 
+            if (isset($_POST['dark_mode']) && $_POST['dark_mode'] == '1') echo 'color: #fff;';
+            else echo 'color: #555;';
+            ?>
         }
         a:hover {
-          color: #000;
+          <?php 
+            if (isset($_POST['dark_mode']) && $_POST['dark_mode'] == '1') echo 'color: #999;';
+            else echo 'color: #000;';
+            ?>
         }
     </style>
     <base target="_parent">
@@ -71,7 +77,36 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
 <?php
 session_start();
 
-if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true) {
+if (!isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] != true && isset($_POST["username"]) && isset($_POST["password"])) {
+    $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $sql = "SELECT name, password, user_role, folder_location FROM users WHERE name = ?";
+          
+    if ($stmt = mysqli_prepare($link, $sql)) {
+        mysqli_stmt_bind_param($stmt, "s", $param_username);
+        $param_username = $_POST["username"];
+        
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_store_result($stmt);
+            if (mysqli_stmt_num_rows($stmt) == 1) {
+                mysqli_stmt_bind_result($stmt, $username, $hashed_password, $user_role, $folder_location);
+                if (mysqli_stmt_fetch($stmt)) {
+                    if (password_verify($_POST["password"], $hashed_password)) {
+                        //session_start();
+                        
+                        $_SESSION["logged_in"] = true;
+                        $_SESSION["username"] = $username;
+                        $_SESSION["user_role"] = $user_role;
+                        $_SESSION["folder_loc"] = $folder_location;               
+                    } else {
+                        header('location: login.php');
+                    }
+                }
+            }
+        }
+        mysqli_stmt_close($stmt);
+    }
+}
+else if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true) {
     header('location: login.php');
 }
 
@@ -230,7 +265,7 @@ $(function(){
                           must_delete = "0";
                           color_tag_bg = "";
                           $('#note_creation_dialog').modal('hide');
-                          parent.hideIframe();
+                          try{ parent.hideIframe(); } catch (err) {}
                           location.reload();
                       }
                 });
@@ -238,7 +273,7 @@ $(function(){
               else
               {
                 $('#note_creation_dialog').modal('hide');
-                parent.hideIframe();
+                try{ parent.hideIframe(); } catch (err) {}
                 location.reload();
               }
             }
@@ -263,7 +298,7 @@ $(function(){
                 color_tag_bg = "";
                 $('#note_dialog').modal('hide');
                 console.log("rr: " + r);
-                parent.hideIframe();
+                try{ parent.hideIframe(); } catch (err) {}
                 location.reload();
             }
       });

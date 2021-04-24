@@ -2,6 +2,8 @@
 $messages['login'] = "Login";
 $messages['login_subtext'] = "Please enter your HomeVault login information.";
 $messages['username'] = "Username";
+$messages['new_password'] = "New password";
+$messages['old_password'] = "Current (old) password";
 $messages['password'] = "Password";
 $messages['confirm_password'] = "Confirm password";
 $messages['slogan'] = "Your data. Your control.";
@@ -47,5 +49,6 @@ $messages['cancel'] = "Cancel";
 $messages['title'] = "Title";
 $messages['content'] = "Content";
 $messages['edit_note'] = "Edit note";
-$messages['edit'] = "Edit"
+$messages['edit'] = "Edit";
+$messages['change_password_title'] = "Change Password";
 ?>

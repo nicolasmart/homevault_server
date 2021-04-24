@@ -15,7 +15,7 @@ To get started with HomeVault, you simply need to get a PHP server and an empty 
 Luckily all of that is much easier to do than it sounds.
 
 #### Platforms with an available snapshot (the HomeVault snapshot eliminates the need for any setup and just runs the server on `localhost`):
-- [Windows](https://github.com/nicolasmart/homevault_server_windows_easyphp)
+- [Windows](https://github.com/nicolasmart/homevault_server_windows)
 
 #### Instructions for a PHP and MySQL setup on other platforms:
 - [Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-20-04)

@@ -2,6 +2,8 @@
 $messages['login'] = "Вход";
 $messages['login_subtext'] = "Моля, въведете данните си за вход в HomeVault.";
 $messages['username'] = "Потребителско име";
+$messages['new_password'] = "Нова парола";
+$messages['old_password'] = "Текуща (стара) парола";
 $messages['password'] = "Парола";
 $messages['confirm_password'] = "Потвърждаване на парола";
 $messages['slogan'] = "Вашите данни. Ваш контрол.";
@@ -48,4 +50,5 @@ $messages['title'] = "Заглавие";
 $messages['content'] = "Съдържание";
 $messages['edit_note'] = "Редактиране на бележка";
 $messages['edit'] = "Редактиране";
+$messages['change_password_title'] = "Смяна на парола";
 ?>
