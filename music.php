@@ -1,6 +1,7 @@
 <?php
 include 'common_vars.inc';
-require('res/translations/bg.php'); // TODO: Change when switching languages
+if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+require('res/translations/' . $_COOKIE["language"] . '.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -83,16 +84,19 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
   <div class="col-sm-3" style="height:100vh;">
     <div class="main_actions_container">
         <img src="res/drawables/music_liked.png" style="width: 100%; object-fit: contain;" />
-        <p style="text-align: center; font-size: 1.3em; padding-top: 10px;">Liked Songs</p>
+        <p style="text-align: center; font-size: 1.3em; padding-top: 10px;"><?php echo $messages['liked_songs']; ?></p>
         <br/>
-        <img src="res/drawables/music_alternative_shuffle.png" style="width: 100%; object-fit: contain; margin-top: 25px;" />
-        <p style="text-align: center; font-size: 1.3em; padding-top: 10px;">Play Shuffle</p>
+        <img src="res/drawables/music_alternative_shuffle.png" style="width: 100%; object-fit: contain;" />
+        <p style="text-align: center; font-size: 1.3em; padding-top: 10px;"><?php echo $messages['shuffle']; ?></p>
+        <br/>
+        <img src="res/drawables/music_upload_button.svg" style="width: 100%; object-fit: contain;" />
+        <p style="text-align: center; font-size: 1.3em; margin-top: -35px; color: #fff;"><?php echo $messages['upload_song']; ?></p>
     </div>
   </div>
   <div class="col-sm-9" style="height: 100vh; overflow-y: scroll;">
         <div class="row">
         <div class="col-sm-6">
-        <h3 style="padding-left: 1px; padding-bottom: 6px;"><strong>Albums</strong></h3>
+        <h3 style="padding-left: 1px; padding-bottom: 6px;"><strong><?php echo $messages['albums']; ?></strong></h3>
         <a href="#" class="listing">
           <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/artistic-album-cover-design-template-d12ef0296af80b58363dc0deef077ecc_screen.jpg?ts=1561488440" class="album-cover" />
           <div class="listing-text">
@@ -191,7 +195,7 @@ require('res/translations/bg.php'); // TODO: Change when switching languages
         </a>
         </div>
         <div class="col-sm-6">
-        <h3 style="padding-left: 1px; padding-bottom: 6px;"><strong>Songs</strong></h3>
+        <h3 style="padding-left: 1px; padding-bottom: 6px;"><strong><?php echo $messages['songs']; ?></strong></h3>
         <a href="#" class="listing">
           <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/artistic-album-cover-design-template-d12ef0296af80b58363dc0deef077ecc_screen.jpg?ts=1561488440" class="album-cover" />
           <div class="listing-text">

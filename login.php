@@ -4,7 +4,8 @@ if (!file_exists('common_vars.inc')) {
     exit;
 }
 include 'common_vars.inc';
-require('res/translations/bg.php'); // TODO: Change when switching languages
+if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+require('res/translations/' . $_COOKIE["language"] . '.php');
 session_start();
 ?>
 <!DOCTYPE html>
@@ -138,6 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="<?php echo $messages['login']; ?>">
             </div>
+            <a href="change_language.php" style="color: #888;"><?php echo $messages['language_switcher']; ?></a>
             <!--<p>Don't have an account? <a href="register.php">Sign up now</a>.</p>-->
         </form>
     </div>

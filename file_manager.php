@@ -5,7 +5,8 @@ Copyright John Campbell (jcampbell1)
 
 Liscense: MIT
 ********************************/
-require('res/translations/bg.php'); // TODO: Change when switching languages
+if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+require('res/translations/' . $_COOKIE["language"] . '.php');
 session_start();
 
 if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true) {
@@ -412,6 +413,8 @@ $(function(){
 			$tbody.empty();
 			$('#breadcrumb').empty().html(renderBreadcrumbs(hashval));
 			if(data.success) {
+				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><a class="name" href="#%2F.."><?php echo $messages['user_root']; ?></a></td><td data-sort="0"></td><td data-sort="0"></td><td></td><td></td></tr>');
+				console.log(hashval);
 				$.each(data.results,function(k,v){
 					$tbody.append(renderFileRow(v));
 				});
@@ -425,7 +428,7 @@ $(function(){
 	}
 	function renderFileRow(data) {
 		var $link = $('<a class="name"' + (data.is_dir ? ' />' : ' target="_parent" />'))
-			.attr('href', data.is_dir ? '#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) : './' + data.path)
+			.attr('href', data.is_dir ? '#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) : '?do=download&file='+ encodeURIComponent(data.path))
 			.text(data.name);
 		var allow_direct_link = <?php echo $allow_direct_link?'true':'false'; ?>;
         	if (!data.is_dir && !allow_direct_link)  $link.css('pointer-events','none');
@@ -453,7 +456,7 @@ $(function(){
 			if(v) {
 				var v_as_text = decodeURIComponent(v);
 				$html.append( $('<span/>').text(' ▸ ') )
-					.append( $('<a/>').attr('href','#'+base+v).text(v_as_text) );
+					.append( $('<a/>').attr('href','#%2F'+base+v).text(v_as_text) );
 				base += v + '%2F';
 			}
 		});

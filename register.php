@@ -4,9 +4,8 @@ if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true || $_SESSIO
     header('location: login.php');
 }
 include 'common_vars.inc';
-require('res/translations/bg.php'); // TODO: Change when switching languages
-
-// TODO: Disallow registering when there's an admin that's not logged in.
+if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+require('res/translations/' . $_COOKIE["language"] . '.php');
 
 $user_role = 1;
 $username = $password = $confirm_password = "";
@@ -72,13 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($username_error) && empty($password_error) && empty($confirm_password_error) && empty($user_role_error)) {
         $sql = "INSERT INTO users (name, password, user_role, folder_location) VALUES (?, ?, ?, ?)";
         
-        if (mkdir("users/" . $username) && mkdir("users/" . $username . '/files') && mkdir("users/" . $username . '/photos') && mkdir("users/" . $username . '/notes')) {
+        if (mkdir("users/" . $username) && mkdir("users/" . $username . '/files') && mkdir("users/" . $username . '/photos') && mkdir("users/" . $username . '/notes') && mkdir("users/" . $username . '/music')) {
             if ($stmt = mysqli_prepare($link, $sql)) {
                 mysqli_stmt_bind_param($stmt, "ssis", $param_username, $param_password, $param_user_role, $param_folder_location);
                 $param_username = $username;
                 $param_password = password_hash($password, PASSWORD_DEFAULT);
                 $param_user_role = $user_role;
-                $param_folder_location = "users/" . $username; //TODO: Change that before beta
+                $param_folder_location = "users/" . $username;
                 
                 if (mysqli_stmt_execute($stmt)) {
                     $myfile = fopen("users/" . $username . '/photos' . "/.htaccess", "w") or die("Unable to open file!");
@@ -114,43 +113,82 @@ Deny from all
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <link rel="stylesheet" href="res/stylesheets/main.css?v=5">
+    <title><?php echo $messages['register']; ?></title>
+    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
     <style type="text/css">
-        body{ font: 14px sans-serif; }
-        .wrapper{ width: 350px; padding: 20px; }
+        .body-overlay {
+            background: url('res/drawables/homevault_default_backdrop.jpg') no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            width: 100vw;
+            height: 100vh;
+        }
+        .wrapper { 
+            width: 400px;
+            position: absolute;
+            justify-content: center;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+        .form-group {
+            margin-top: 30px;
+        }
+        input[type="text"], input[type="password"] {
+            border: 0px;
+            padding-left: 45px;
+            padding-right: 45px;
+        }
+        input[type="submit"] {
+            width: 70%;
+        }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <h2>Sign Up</h2>
-        <p>Please fill this form to create an account.</p>
+<div class="body-overlay">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <div class="wrapper popout-card">
+        <h2><?php echo $messages['register']; ?></h2>
+        <p><?php echo $messages['register_subtitle']; ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group <?php echo (!empty($username_error)) ? 'has-error' : ''; ?>">
-                <label>Username</label>
-                <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+                <input type="text" name="username" class="form-control" placeholder="<?php echo $messages['username']; ?>" value="<?php echo $username; ?>" style="background: url('res/drawables/username_textbox.svg');">
                 <span class="help-block"><?php echo $username_error; ?></span>
             </div>    
             <div class="form-group <?php echo (!empty($password_error)) ? 'has-error' : ''; ?>">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
+                <input type="password" name="password" class="form-control" placeholder="<?php echo $messages['password']; ?>" style="background: url('res/drawables/password_textbox.svg');">
                 <span class="help-block"><?php echo $password_error; ?></span>
             </div>
             <div class="form-group <?php echo (!empty($confirm_password_error)) ? 'has-error' : ''; ?>">
-                <label>Confirm Password</label>
-                <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
+                <input type="password" name="confirm_password" class="form-control" placeholder="<?php echo $messages['confirm_password']; ?>" style="background: url('res/drawables/password_textbox.svg');">
                 <span class="help-block"><?php echo $confirm_password_error; ?></span>
             </div>
-            <div class="form-group">
-                <label>Account Type</label>
-                <input type="radio" name="user_role" class="form-control" value="admin" checked> <p style="text-align:center">Administrator</p>
-                <input type="radio" name="user_role" class="form-control" value="standard"> <p style="text-align:center">Standard User</p>
+            <div style="text-align: left;">
+                <div class="form-check" style="padding-top: 10px;">
+                    <label><?php echo $messages['account_user']; ?></label>
+                    <input type="radio" name="user_role" class="form-check-input" value="admin" id="adminuseropt" checked>
+                    <label class="form-check-label" for="adminuseropt">
+                        <?php echo $messages['administrator']; ?></p>
+                    </label>
+                </div>
+                <div class="form-check" style="margin-top: -10px; margin-left: 5px; margin-bottom: -24px;">
+                    <input type="radio" name="user_role" class="form-check-input" value="standard" id="stduseropt">
+                    <label class="form-check-label" for="stduseropt">
+                        <?php echo $messages['standard_user']; ?>
+                    </label>
+                </div>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Register" style="width: 100%; margin-top: 20px;">
+                <input type="submit" class="btn btn-primary" value="<?php echo $messages['register']; ?>" style="width: 100%; margin-top: 20px;">
             </div>
         </form>
     </div>    
+</div>
 </body>
 </html>

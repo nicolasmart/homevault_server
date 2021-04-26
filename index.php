@@ -4,7 +4,8 @@ if (!file_exists('common_vars.inc')) {
     exit;
 }
 include 'common_vars.inc';
-require('res/translations/bg.php'); // TODO: Change when switching languages
+if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+require('res/translations/' . $_COOKIE["language"] . '.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -94,9 +95,9 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
             <input type="image" src="res/drawables/md_long_hamburger_button.svg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu" id="main_nav">
                 <a class="dropdown-item active" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='file_manager.php'; document.title = '<?php echo $messages['home_files']; ?> - HomeVault';"><?php echo $messages['home_files']; ?></a>
-                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='photos.php'; document.title = 'Снимки - HomeVault';">Снимки</a>
-                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='music.php'; document.title = 'Музика - HomeVault';">Музика</a>
-                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='notes.php'; document.title = 'Бележки - HomeVault';">Бележки</a>
+                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='photos.php'; document.title = '<?php echo $messages['photos']; ?> - HomeVault';"><?php echo $messages['photos']; ?></a>
+                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='music.php'; document.title = '<?php echo $messages['music']; ?> - HomeVault';"><?php echo $messages['music']; ?></a>
+                <a class="dropdown-item" href="#" onclick="$('#main_nav > a.active').removeClass('active'); $(this).addClass('active'); document.getElementById('page-content').src='notes.php'; document.title = '<?php echo $messages['notes']; ?> - HomeVault';"><?php echo $messages['notes']; ?></a>
                 <!--<a class="dropdown-item" href="#">Пароли</a>-->
                 <!--<div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Настройки</a>-->
@@ -110,7 +111,7 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
                 <a class="dropdown-item" href="#" onclick="event.preventDefault();"><i><?php echo $_SESSION['username']; ?></i></a>
                 <div class="dropdown-divider"></div>
                 <?php if ($_SESSION['user_role'] == '0') echo '<a class="dropdown-item" href="register.php">Регистрация на нов потребител</a>'; ?>
-                <a class="dropdown-item" href="#">Промяна на парола</a>
+                <a class="dropdown-item" href="change_password.php">Промяна на парола</a>
                 <a class="dropdown-item" href="logout.php">Изход от профил</a>
                 <!--<div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Настройки</a>-->

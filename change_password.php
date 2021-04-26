@@ -4,7 +4,8 @@ if (!file_exists('common_vars.inc')) {
     exit;
 }
 include 'common_vars.inc';
-require('res/translations/bg.php'); // TODO: Change when switching languages
+if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+require('res/translations/' . $_COOKIE["language"] . '.php');
 session_start();
 ?>
 <!DOCTYPE html>
@@ -52,32 +53,39 @@ session_start();
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 <?php
-// No need to be on the login page if user is already logged in
-if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
-    header("location: index.php");
-    exit;
-}
 
-$username = "";
+$username = $_SESSION["username"];
 $password = "";
 $username_error = "";
 $password_error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
  
-    // Checking for empty username or password
-    if (empty(trim($_POST["username"]))) {
-        $username_error = $messages['empty_username'];
-        return;
-    } else {
-        $username = trim($_POST["username"]);
-    }
-    
-    if (empty(trim($_POST["password"]))) {
-        $password_error = $messages['empty_password'];
+    // Checking for empty password
+    if (empty(trim($_POST["old_password"]))) {
+        $old_password_error = $messages['empty_password'];
         return;
     } else{
-        $password = trim($_POST["password"]);
+        $password = trim($_POST["old_password"]);
+    }
+
+    // Validate password
+    if (empty(trim($_POST["new_password"]))) {
+        $new_password_error = "Please enter a password.";     
+    } else if (strlen(trim($_POST["new_password"])) < 6) {
+        $new_password_error = "Password must have atleast 6 characters.";
+    } else {
+        $new_password = trim($_POST["new_password"]);
+    }
+    
+    // Validate confirm password
+    if (empty(trim($_POST["confirm_password"]))) {
+        $confirm_password_error = "Please confirm password.";     
+    } else {
+        $confirm_password = trim($_POST["confirm_password"]);
+        if (empty($password_error) && ($password != $confirm_password)) {
+            $confirm_password_error = "Password did not match.";
+        }
     }
 
     $link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
@@ -98,13 +106,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (password_verify($password, $hashed_password)) {
                             session_start();
                             
-                            $_SESSION["logged_in"] = true;
-                            $_SESSION["username"] = $username;
-                            $_SESSION["user_role"] = $user_role;
-                            $_SESSION["folder_loc"] = $folder_location;               
+                            $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+                            $sql2 = "UPDATE users SET password = ". "'" . password_hash($new_password, PASSWORD_DEFAULT) . "'" . " WHERE name = " . "'" . $username . "'";
+                            if ($conn->query($sql2) === TRUE) {
+                                echo "<script>alert('" . $messages["password_changed"] . "');window.location.href = 'index.php';
+                                </script>";
+                            } else {
+                                echo "Error updating record: " . $conn->error;
+                            }
                             
-                            echo "<script>window.location.href = 'index.php';
-                            </script>";
+                            $conn->close();
                         } else {
                             $password_error = $messages['wrong_password'];
                         }
@@ -127,24 +139,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <img src="res/drawables/homevault_logo_big.svg"></img>
         <p style="margin-top: 10px;"><?php echo $messages['change_password_title']; ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($username_error)) ? 'has-error' : ''; ?>">
-                <input type="text" name="username" class="form-control" placeholder="<?php echo $messages['username']; ?>" value="<?php echo $username; ?>" style="background: url('res/drawables/username_textbox.svg');">
-                <span class="help-block"><?php echo $username_error; ?></span>
-            </div>
-            <div class="form-group <?php echo (!empty($password_error)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($old_password_error)) ? 'has-error' : ''; ?>">
                 <input type="password" name="old_password" class="form-control" placeholder="<?php echo $messages['old_password']; ?>" style="background: url('res/drawables/password_textbox.svg');">
-                <span class="help-block"><?php echo $password_error; ?></span>
+                <span class="help-block"><?php echo $old_password_error; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($password_error)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($new_password_error)) ? 'has-error' : ''; ?>">
                 <input type="password" name="new_password" class="form-control" placeholder="<?php echo $messages['new_password']; ?>" style="background: url('res/drawables/password_textbox.svg');">
-                <span class="help-block"><?php echo $password_error; ?></span>
+                <span class="help-block"><?php echo $new_password_error; ?></span>
             </div>
-            <div class="form-group <?php echo (!empty($password_error)) ? 'has-error' : ''; ?>">
+            <div class="form-group <?php echo (!empty($confirm_password_error)) ? 'has-error' : ''; ?>">
                 <input type="password" name="confirm_password" class="form-control" placeholder="<?php echo $messages['confirm_password']; ?>" style="background: url('res/drawables/password_textbox.svg');">
-                <span class="help-block"><?php echo $password_error; ?></span>
+                <span class="help-block"><?php echo $confirm_password_error; ?></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="<?php echo $messages['login']; ?>">
+                <input type="submit" class="btn btn-primary" value="<?php echo $messages['update_password']; ?>">
             </div>
             <!--<p>Don't have an account? <a href="register.php">Sign up now</a>.</p>-->
         </form>
