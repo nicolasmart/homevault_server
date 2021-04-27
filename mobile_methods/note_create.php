@@ -1,7 +1,7 @@
 <?php 
 include_once('connection.php');
 include '../common_vars.inc';
-require('../res/translations/bg.php'); // TODO: Change when switching languages
+require('../res/translations/bg.php');
 
 $username = "";
 $password = "";

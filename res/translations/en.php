@@ -43,6 +43,7 @@ $messages['upload_file'] = "Upload files";
 $messages['create_folder'] = "Create a folder";
 $messages['create_folder_name_desc'] = "Please enter a name for the new folder:";
 $messages['download'] = "download";
+$messages['download_u'] = "Download";
 $messages['delete'] = "delete";
 $messages['delete_u'] = "Delete";
 $messages['delete_confirm'] = "Are you sure that you wanna delete the selected file?";
@@ -59,6 +60,13 @@ $messages['write_perm'] = "write";
 $messages['exec_perm'] = "execute";
 $messages['month_array'] = "['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']";
 $messages['user_root'] = "<i>(user root folder)</i>";
+$messages['rename'] = "Rename";
+$messages['rename_prompt'] = "Enter the new filename:";
+$messages['copy'] = "Copy";
+$messages['copy_prompt'] = "Enter the destination of the file copy:";
+$messages['move'] = "Move";
+$messages['move_prompt'] = "Enter the new destination of the file:";
+$messages['open_folder'] = "<b>Open</b>";
 
 // Photos
 $messages['photos'] = "Photos";

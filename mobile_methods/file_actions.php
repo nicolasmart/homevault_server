@@ -1,12 +1,18 @@
 <?php 
 include_once('connection.php');
 include '../common_vars.inc';
-require('../res/translations/en.php'); // TODO: Change when switching languages
+require('../res/translations/en.php');
 
 $username = "";
 $password = "";
 $username_error = "";
 $password_error = "";
+
+/// $_POST['action'] code:
+/// 1 = Move
+/// 2 = Copy
+/// 3 = Delete
+/// 4 = Rename
 
 if (isset($_POST['logged_in']) && $_POST['logged_in']=='1') {
     session_start();
@@ -69,6 +75,8 @@ else if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             /// 1 = Move
                             /// 2 = Copy
                             /// 3 = Delete
+                            /// 4 = Rename
+                            
                             if (strpos($_POST['directory'], '../') !== false) return;
                             $dir1 = '../' . $folder_location . '/files' . '/' . $_POST['directory'];
                             if ($_POST['action'] == '1') {

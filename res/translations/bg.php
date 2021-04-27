@@ -43,6 +43,7 @@ $messages['upload_file'] = "Качване на файлове";
 $messages['create_folder'] = "Създаване на папка";
 $messages['create_folder_name_desc'] = "Моля, въведете име на новата папка:";
 $messages['download'] = "изтегляне";
+$messages['download_u'] = "Изтегляне";
 $messages['delete'] = "изтриване";
 $messages['delete_u'] = "Изтриване";
 $messages['delete_confirm'] = "Сигурни ли сте, че искате да изтриете този файл?";
@@ -59,6 +60,13 @@ $messages['write_perm'] = "писане";
 $messages['exec_perm'] = "изпълняване";
 $messages['month_array'] = "['Яну', 'Фев', 'Мар', 'Апр', 'Май', 'Юни', 'Юли', 'Авг', 'Сеп', 'Окт', 'Ное', 'Дек']";
 $messages['user_root'] = "<i>(основна потребителска папка)</i>";
+$messages['rename'] = "Преименуване";
+$messages['rename_prompt'] = "Въведете новото име на файла:";
+$messages['copy'] = "Копиране";
+$messages['copy_prompt'] = "Изберете дестинация на новото копие:";
+$messages['move'] = "Преместване";
+$messages['move_prompt'] = "Изберете новата дестинация на файла:";
+$messages['open_folder'] = "<b>Отваряне</b>";
 
 // Photos
 $messages['photos'] = "Снимки";

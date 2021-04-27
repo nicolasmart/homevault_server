@@ -241,7 +241,6 @@ footer {font-size:11px; color:#bbbbc5; padding:4em 0 0;text-align: left;}
 footer a, footer a:visited {color:#bbbbc5;}
 #breadcrumb { padding-top:34px; font-size:15px; color:#aaa;display:inline-block;float:left;}
 #folder_actions {width: 50%;float:right;}
-a, a:visited { color:#00c; text-decoration: none}
 a:hover {text-decoration: underline}
 .sort_hide{ display:none;}
 table {border-collapse: collapse;width:100%;}
@@ -268,9 +267,19 @@ a.delete {display:inline-block;
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB2klEQVR4nJ2ST2sTQRiHn5mdmj92t9XmUJIWJGq9NHrRgxQiCtqbl97FqxgaL34CP0FD8Qv07EHEU0Ew6EXEk6ci8Q9JtcXEkHR3k+zujIdUqMkmiANzmJdnHn7vzCuIWbe291tSkvhz1pr+q1L2bBwrRgvFrcZKKinfP9zI2EoKmm7Azstf3V7fXK2Wc3ujvIqzAhglwRJoS2ImQZMEBjgyoDS4hv8QGHA1WICvp9yelsA7ITBTIkwWhGBZ0Iv+MUF+c/cB8PTHt08snb+AGAACZDj8qIN6bSe/uWsBb2qV24/GBLn8yl0plY9AJ9NKeL5ICyEIQkkiZenF5XwBDAZzWItLIIR6LGfk26VVxzltJ2gFw2a0FmQLZ+bcbo/DPbcd+PrDyRb+GqRipbGlZtX92UvzjmUpEGC0JgpC3M9dL+qGz16XsvcmCgCK2/vPtTNzJ1x2kkZIRBSivh8Z2Q4+VkvZy6O8HHvWyGyITvA1qndNpxfguQNkc2CIzM0xNk5QLedCEZm1VKsf2XrAXMNrA2vVcq4ZJ4DhvCSAeSALXASuLBTW129U6oPrT969AK4Bq0AeWARs4BRgieMUEkgDmeO9ANipzDnH//nFB0KgAxwATaAFeID5DQNatLGdaXOWAAAAAElFTkSuQmCC) no-repeat scroll 0px 5px;
 	padding:4px 0 4px 20px;
 }
+.delete-dropdown:focus, .delete-dropdown:hover {
+    color: #16181b !important;
+    text-decoration: none;
+    background-color: #f8f9fa !important;
+}
+.delete-dropdown.active, .delete-dropdown:active {
+    color: #fff !important;
+}
 </style>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+var global_list = null;
+var id_num = 1;
 (function($){
 	$.fn.tablesorter = function() {
 		var $table = this;
@@ -326,6 +335,7 @@ $(function(){
 			$.post("",{'do':'delete',file:$(this).attr('data-file'),xsrf:XSRF},function(response){
 				list();
 			},'json');
+			list();
 		}
 		return false;
 	});
@@ -408,13 +418,14 @@ $(function(){
 	}
 <?php endif; ?>
 	function list() {
+		id_num = 1;
 		var hashval = window.location.hash.substr(1);
 		$.get('?do=list&file='+ hashval,function(data) {
 			$tbody.empty();
 			$('#breadcrumb').empty().html(renderBreadcrumbs(hashval));
 			if(data.success) {
-				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><a class="name" href="#%2F.."><?php echo $messages['user_root']; ?></a></td><td data-sort="0"></td><td data-sort="0"></td><td></td><td></td></tr>');
-				console.log(hashval);
+				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><div class="btn-group dropright" id="0" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'0\').classList.contains(\'show\')) { location.href = \'#%2F..\'; }"><?php echo $messages['user_root']; ?></a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#%2F.."><?php echo $messages['open_folder']; ?></a></div></div></td><td data-sort="0"></td><td data-sort="0"></td><td></td><td></td></tr>');
+				//console.log(hashval);
 				$.each(data.results,function(k,v){
 					$tbody.append(renderFileRow(v));
 				});
@@ -426,19 +437,22 @@ $(function(){
 			$('#table').retablesort();
 		},'json');
 	}
+	global_list = list;
 	function renderFileRow(data) {
-		var $link = $('<a class="name"' + (data.is_dir ? ' />' : ' target="_parent" />'))
-			.attr('href', data.is_dir ? '#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) : '?do=download&file='+ encodeURIComponent(data.path))
-			.text(data.name);
+		var $link;
+		var shortFilePath = (data.path).substr((data.path).includes('../') ? (data.path).indexOf('../') + 2 : (data.path).split('/', 2).join('/').length + 1);
+		if (!data.is_dir) $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { location.href = \'?do=download&file=' + encodeURIComponent(data.path) + '\'; }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="?do=download&file=' + encodeURIComponent(data.path) + '"><b><?php echo $messages['download_u']; ?></b></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
+		else $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { location.href = \'#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '\'; }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '"><?php echo $messages['open_folder']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
 		var allow_direct_link = <?php echo $allow_direct_link?'true':'false'; ?>;
         	if (!data.is_dir && !allow_direct_link)  $link.css('pointer-events','none');
 		var $dl_link = $('<a/>').attr('href','?do=download&file='+ encodeURIComponent(data.path))
 			.addClass('download').text(<?php echo "'" . $messages['download'] . "'"; ?>);
-		var $delete_link = $('<a href="#" />').attr('data-file',data.path).addClass('delete').text(<?php echo "'" . $messages['delete'] . "'"; ?>);
+		//var $delete_link = $('<a href="#" />').attr('data-file',data.path).addClass('delete').text(<?php echo "'" . $messages['delete'] . "'"; ?>);
 		var perms = [];
 		if(data.is_readable) perms.push('<?php echo $messages['read_perm']; ?>');
 		if(data.is_writable) perms.push('<?php echo $messages['write_perm']; ?>');
 		if(data.is_executable) perms.push('<?php echo $messages['exec_perm']; ?>');
+		id_num = id_num + 1;
 		var $html = $('<tr />')
 			.addClass(data.is_dir ? 'is_dir' : '')
 			.append( $('<td class="first" />').append($link) )
@@ -446,7 +460,7 @@ $(function(){
 				.html($('<span class="size" />').text(formatFileSize(data.size))) )
 			.append( $('<td/>').attr('data-sort',data.mtime).text(formatTimestamp(data.mtime)) )
 			.append( $('<td/>').text(perms.join('+')) )
-			.append( $('<td/>').append($dl_link).append( data.is_deleteable ? $delete_link : '') )
+			.append( $('<td/>').append($dl_link)/**.append( data.is_deleteable ? $delete_link : '')*/ )
 		return $html;
 	}
 	function renderBreadcrumbs(path) {
@@ -474,8 +488,25 @@ $(function(){
 		var d = Math.round(bytes*10);
 		return pos ? [parseInt(d/10),".",d%10," ",s[pos]].join('') : bytes + ' bytes';
 	}
-})
 
+	
+});
+function fileAction(action, d1, d2)
+{
+	if (d2 === null) {
+        return;
+    }
+	$.ajax({
+			type : 'post',
+			url : 'mobile_methods/file_actions.php',
+			data : {'directory': d1, 'directory2': d2, 'logged_in': '1', 'action': action},
+			success : function(r)
+			{
+				global_list();
+			}
+	});
+	global_list();
+}
 </script>
 <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css"> 
 <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
@@ -486,6 +517,7 @@ body {
 }
 </style>
 </head><body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 <div id="top">
    <?php if($allow_create_folder): ?>
 	<form action="?" method="post" id="mkdir" />
