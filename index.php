@@ -163,7 +163,135 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
         $("#page-content").show();
     }
 
+    var fcAction, fcD1, global_list, notRunning = true;
+    function fileCrypt(action, d1, list_function)
+    {
+        fcAction = action;
+        fcD1 = d1;
+        global_list = list_function;
+        $('#passwordModal').on('shown.bs.modal', function () {
+            $('#password-box').trigger('focus');
+        });
+        $('#passwordModal').modal('show'); 
+        document.getElementById('password-box').addEventListener("keyup", function(event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                if (notRunning) fileCryptFinish();
+            }
+        });
+        document.getElementById('password-box').addEventListener("keydown", function(event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                event.preventDefault();
+            }
+        });
+    }
+    function fileCryptFinish()
+    {
+        notRunning = false;
+        var passkey = document.getElementById('password-box').value;
+        if (passkey === null) {
+            notRunning = true;
+            return;
+        }
+        document.getElementById("password-box").disabled = true;
+        if (fcAction == "7") { /// Special case for decryption while downloading
+            $.ajax({
+                type : 'post',
+                url : 'mobile_methods/file_download.php',
+                cache : false,
+                xhr : function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 2) {
+                            if (xhr.status == 200) {
+                                xhr.responseType = "blob";
+                            } else {
+                                xhr.responseType = "text";
+                            }
+                        }
+                    };
+                    return xhr;
+                },
+                data : {'directory': fcD1.substr(fcD1.indexOf('/')+1), 'username': '<?php echo $_SESSION['username']; ?>', 'password': passkey},
+                success : function(r)
+                {
+                    if (r === '') 
+                    {
+                        alert('<?php echo $messages['wrong_password']; ?>');
+                        return;
+                    }
+                    var blob = new Blob([r], { type: "application/octetstream" });
+                    
+                    //Check the Browser type and download the File.
+                    var isIE = false || !!document.documentMode;
+                    if (isIE) {
+                        window.navigator.msSaveBlob(blob, fileName);
+                    } else {
+                        var url = window.URL || window.webkitURL;
+                        link = url.createObjectURL(blob);
+                        var a = $("<a />");
+                        a.attr("download", fcD1.substr(fcD1.lastIndexOf('/')+1, fcD1.lastIndexOf('.crypt')-fcD1.lastIndexOf('/')-1));
+                        a.attr("href", link);
+                        $("body").append(a);
+                        a[0].click();
+                        $("body").remove(a);
+                    }
+
+                    $('#passwordModal').modal('hide'); 
+                    document.getElementById('password-box').value = '';
+                    document.getElementById("password-box").disabled = false;
+                    global_list();
+                    notRunning = true;
+                }
+            });
+            global_list();
+            return;
+        }
+        $.ajax({
+            type : 'post',
+            url : 'mobile_methods/file_actions.php',
+            data : {'directory': fcD1, 'password': passkey, 'logged_in': '1', 'action': fcAction},
+            success : function(r)
+            {
+                if (r && !(r === "")) alert(r);
+                else $('#passwordModal').modal('hide'); 
+                document.getElementById('password-box').value = '';
+                document.getElementById("password-box").disabled = false;
+                global_list();
+                notRunning = true;
+            }
+        });
+        global_list();
+
+    }
+
     </script>    
+</div>
+
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="passwordModalLabel"><?php echo $messages['password']; ?></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group" style="margin-top: 0px;">
+            <label for="password-box" class="col-form-label"><?php echo $messages['password_prompt']; ?></label>
+            <input type="password" class="form-control" id="password-box">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="fileCryptFinish();"><?php echo $messages['confirm']; ?></button>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

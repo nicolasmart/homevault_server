@@ -67,6 +67,10 @@ $messages['copy_prompt'] = "Enter the destination of the file copy:";
 $messages['move'] = "Move";
 $messages['move_prompt'] = "Enter the new destination of the file:";
 $messages['open_folder'] = "<b>Open</b>";
+$messages['password_prompt'] = "Please enter your password to confirm the operation:";
+$messages['encrypt'] = "Encrypt";
+$messages['decrypt'] = "Decrypt";
+$messages['confirm'] = "Confirm";
 
 // Photos
 $messages['photos'] = "Photos";

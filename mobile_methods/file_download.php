@@ -42,6 +42,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (password_verify($password, $hashed_password)) {
                             //if (strpos($_POST['directory'], '../') !== false) return;
                             $file = '../' . $folder_location . '/files' . $_POST["directory"];
+                            if (substr($file, -6)) {
+                                $file2 = file_get_contents($file);
+                                $decrypted_file = decryptFile($file2, $password);
+                                if (empty($decrypted_file)) {
+                                    echo $messages['wrong_password'];
+                                    exit;
+                                }
+                                else {
+                                    $filename = substr(basename($file), 0, -6);
+                                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                                    header('Content-Type: ' . finfo_buffer($finfo, $decrypted_file));
+                                    //header('Content-Length: '. filesize($file)/2);
+                                    header(sprintf('Content-Disposition: attachment; filename=%s',
+                                        strpos('MSIE',$_SERVER['HTTP_REFERER']) ? rawurlencode($filename) : "\"$filename\"" ));
+                                    ob_flush();
+                                    echo $decrypted_file;
+                                    exit;
+                                }
+                            }
 
                             $filename = basename($file);
                             $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -68,6 +87,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     mysqli_close($link);
+}
+
+function decryptFile($data, $key) {
+    $encryption_key = base64_decode($key);
+    list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
+    return openssl_decrypt($encrypted_data, 'aes-256-cbc', $encryption_key, 0, $iv);
 }
 
 ?>
