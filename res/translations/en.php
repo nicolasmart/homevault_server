@@ -30,6 +30,9 @@ $messages['administrator'] = "Administrator";
 $messages['standard_user'] = "Standard user";
 $messages['password_changed'] = "Password changed successfully.";
 $messages['update_password'] = "Update";
+$messages['change_password'] = "Change password";
+$messages['logout'] = "Logout";
+$messages['register_user'] = "Register a new user";
 
 $messages['language_switcher'] = "Премини на български?";
 
@@ -40,6 +43,7 @@ $messages['change_password_title'] = "Change Password";
 // Files
 $messages['home_files'] = "Files";
 $messages['upload_file'] = "Upload files";
+$messages['folder'] = "Folder";
 $messages['create_folder'] = "Create a folder";
 $messages['create_folder_name_desc'] = "Please enter a name for the new folder:";
 $messages['download'] = "download";
@@ -48,6 +52,7 @@ $messages['delete'] = "delete";
 $messages['delete_u'] = "Delete";
 $messages['delete_confirm'] = "Are you sure that you wanna delete the selected file?";
 $messages['file_name'] = "Name";
+$messages['file_type'] = "Type";
 $messages['file_size'] = "Size";
 $messages['file_modified'] = "Modified";
 $messages['file_permissions'] = "Permissions";

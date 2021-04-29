@@ -428,7 +428,7 @@ $(function(){
 			$tbody.empty();
 			$('#breadcrumb').empty().html(renderBreadcrumbs(hashval));
 			if(data.success) {
-				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><div class="btn-group dropright" id="0" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'0\').classList.contains(\'show\')) { location.href = \'#%2F..\'; }"><?php echo $messages['user_root']; ?></a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#%2F.."><?php echo $messages['open_folder']; ?></a></div></div></td><td data-sort="0"></td><td data-sort="0"></td><td></td><td></td></tr>');
+				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><div class="btn-group dropright" id="0" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'0\').classList.contains(\'show\')) { location.href = \'#%2F..\'; }"><?php echo $messages['user_root']; ?></a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#%2F.."><?php echo $messages['open_folder']; ?></a></div></div></td><td data-sort="0"></td><td data-sort="0"></td><td></td></tr>');
 				//console.log(hashval);
 				$.each(data.results,function(k,v){
 					$tbody.append(renderFileRow(v));
@@ -451,7 +451,7 @@ $(function(){
         	if (!data.is_dir && !allow_direct_link)  $link.css('pointer-events','none');
 		var $dl_link = $('<a/>').attr('href','?do=download&file='+ encodeURIComponent(data.path))
 			.addClass('download').text(<?php echo "'" . $messages['download'] . "'"; ?>);
-		//var $delete_link = $('<a href="#" />').attr('data-file',data.path).addClass('delete').text(<?php echo "'" . $messages['delete'] . "'"; ?>);
+		var $delete_link = $('<a href="#" />').attr('data-file',data.path).addClass('delete').text(<?php echo "'" . $messages['delete'] . "'"; ?>);
 		var perms = [];
 		if(data.is_readable) perms.push('<?php echo $messages['read_perm']; ?>');
 		if(data.is_writable) perms.push('<?php echo $messages['write_perm']; ?>');
@@ -460,11 +460,12 @@ $(function(){
 		var $html = $('<tr />')
 			.addClass(data.is_dir ? 'is_dir' : '')
 			.append( $('<td class="first" />').append($link) )
+			.append( $('<td/>').append(data.is_dir ? '<?php echo $messages['folder']; ?>' : getExtensionHV(data.name)) )
 			.append( $('<td/>').attr('data-sort',data.is_dir ? -1 : data.size)
 				.html($('<span class="size" />').text(formatFileSize(data.size))) )
 			.append( $('<td/>').attr('data-sort',data.mtime).text(formatTimestamp(data.mtime)) )
-			.append( $('<td/>').text(perms.join('+')) )
-			.append( $('<td/>').append($dl_link)/**.append( data.is_deleteable ? $delete_link : '')*/ )
+			//.append( $('<td/>').text(perms.join('+')) )
+			.append( $('<td/>')/**.append($dl_link)*/.append( data.is_deleteable ? $delete_link : '') )
 		return $html;
 	}
 	function renderBreadcrumbs(path) {
@@ -491,6 +492,13 @@ $(function(){
 		for(var pos = 0;bytes >= 1000; pos++,bytes /= 1024);
 		var d = Math.round(bytes*10);
 		return pos ? [parseInt(d/10),".",d%10," ",s[pos]].join('') : bytes + ' bytes';
+	}
+	function getExtensionHV(filename) {
+		if (filename.lastIndexOf('.crypt') != -1) {
+			var lastDot = filename.substr(0, filename.lastIndexOf('.crypt')).lastIndexOf('.')+1;
+			return filename.substr(lastDot, filename.lastIndexOf('.crypt')-lastDot).toUpperCase();
+		}
+		return filename.substr(filename.lastIndexOf('.')+1).toUpperCase();
 	}
 
 	
@@ -544,9 +552,10 @@ body {
 <div id="upload_progress"></div>
 <table id="table"><thead><tr>
 	<th><?php echo $messages['file_name']; ?></th>
+	<th><?php echo $messages['file_type']; ?></th>
 	<th><?php echo $messages['file_size']; ?></th>
 	<th><?php echo $messages['file_modified']; ?></th>
-	<th><?php echo $messages['file_permissions']; ?></th>
+	<!--<th><?php echo $messages['file_permissions']; ?></th>-->
 	<th><?php echo $messages['file_actions']; ?></th>
 </tr></thead><tbody id="list">
 

@@ -88,6 +88,13 @@ if (!empty($_FILES['file']['name'])) {
 if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
     mkdir($_SESSION["folder_loc"] . '/files' . '/' . $_POST['new_folder']);
 }
+
+function getSymbolByQuantity($bytes) {
+    $symbols = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
+    $exp = $bytes ? floor(log($bytes) / log(1024)) : 0;
+
+    return sprintf('%.2f '.$symbols[$exp], ($bytes/pow(1024, floor($exp))));
+}
 ?>
     <div class="toolbar popout-card" style="z-index: 900; position: relative;">
         <div class="left-action">
@@ -109,10 +116,11 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
             <input type="image" src="res/drawables/md_user_circle.svg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu dropdown-menu-right" id="user_nav">
                 <a class="dropdown-item" href="#" onclick="event.preventDefault();"><i><?php echo $_SESSION['username']; ?></i></a>
+                <a class="dropdown-item" href="#" onclick="event.preventDefault();"><i><?php echo getSymbolByQuantity(disk_free_space('.')) . ' out of ' . getSymbolByQuantity(disk_total_space('.')); ?></i></a>
                 <div class="dropdown-divider"></div>
-                <?php if ($_SESSION['user_role'] == '0') echo '<a class="dropdown-item" href="register.php">Регистрация на нов потребител</a>'; ?>
-                <a class="dropdown-item" href="change_password.php">Промяна на парола</a>
-                <a class="dropdown-item" href="logout.php">Изход от профил</a>
+                <?php if ($_SESSION['user_role'] == '0') echo '<a class="dropdown-item" href="register.php">' . $messages['register_user'] . '</a>'; ?>
+                <a class="dropdown-item" href="change_password.php"><?php echo $messages['change_password']; ?></a>
+                <a class="dropdown-item" href="logout.php"><?php echo $messages['logout']; ?></a>
                 <!--<div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Настройки</a>-->
             </div>
@@ -135,26 +143,6 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
         <iframe src="file_manager.php" id="page-content" allowtransparency="true" frameBorder="0" style="flex: 1; width: 100%; z-index: 1;"></iframe>
     </div>  
     <script>
-    /**$(document).ready(function() {
-        $('body').css('display', 'none');
-        $('body').fadeIn(600);
-        $("#file").change(function(){
-            document.getElementById("file_upload").submit();
-        });
-    });*/
-    //document.getElementById('upload_overlay').addEventListener('click', openDialog);
-    //document.getElementById('add_folder').addEventListener('click', createFolder);
-
-    //function openDialog() {
-    //    document.getElementById('file').click();
-    //}
-    /**function createFolder() {
-        var folder_name = prompt('<?php echo $messages['create_folder_name_desc']; ?>', '<?php echo $messages['create_folder']; ?>'); // TODO: Get rid of this js prompt cause it's just lazy
-        if (folder_name != null) {
-            document.getElementById("new_folder").value = folder_name;
-            document.getElementById("create_folder").submit();
-        }
-    }*/
 
     function hideIframe() {
         $("#page-content").hide();

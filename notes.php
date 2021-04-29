@@ -223,7 +223,12 @@ var color_tag_bg = "";
 var selected_item = "";
 var must_delete = "0";
 $(document).ready(function() {
-    parent.showIframe();
+    try {
+      parent.showIframe();
+    }
+    catch (exception_var) {
+      return;
+    }
 });
 $(function(){
   $('.note').click(function(){
@@ -284,7 +289,8 @@ $(function(){
       $('#note_dialog').modal('hide');
       $('#note_creation_dialog_title').text('<?php echo $messages['edit_note']; ?>');
       $('#note-name').val($('#note_dialog_title').text());
-      $('#note-text').val($('.note_content').show().html());
+      var note_text = $('.note_content').show().html();
+      $('#note-text').val(note_text.substr(0, note_text.lastIndexOf('<br>')));
       must_delete="1";
       $('#note_creation_dialog').modal('show');
   });

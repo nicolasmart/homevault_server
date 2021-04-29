@@ -30,6 +30,9 @@ $messages['administrator'] = "Администратор";
 $messages['standard_user'] = "Стандартен потребител";
 $messages['password_changed'] = "Паролата е успешно променена.";
 $messages['update_password'] = "Промяна";
+$messages['change_password'] = "Промяна на парола";
+$messages['logout'] = "Изход от профил";
+$messages['register_user'] = "Регистрация на нов потребител";
 
 $messages['language_switcher'] = "Switch to English?";
 
@@ -40,6 +43,7 @@ $messages['change_password_title'] = "Смяна на парола";
 // Files
 $messages['home_files'] = "Файлове";
 $messages['upload_file'] = "Качване на файлове";
+$messages['folder'] = "Папка";
 $messages['create_folder'] = "Създаване на папка";
 $messages['create_folder_name_desc'] = "Моля, въведете име на новата папка:";
 $messages['download'] = "изтегляне";
@@ -48,6 +52,7 @@ $messages['delete'] = "изтриване";
 $messages['delete_u'] = "Изтриване";
 $messages['delete_confirm'] = "Сигурни ли сте, че искате да изтриете този файл?";
 $messages['file_name'] = "Име";
+$messages['file_type'] = "Тип";
 $messages['file_size'] = "Размер";
 $messages['file_modified'] = "Модифициран";
 $messages['file_permissions'] = "Разрешения";

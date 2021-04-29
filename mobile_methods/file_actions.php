@@ -155,6 +155,20 @@ else if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 $dir2 = dirname($dir1) . '/' . $_POST['directory2'];
                                 rename($dir1, $dir2);
                             }
+                            if ($_POST['action'] == '5') {
+                                $file1 = file_get_contents($dir1);
+                                $encrypted_file = encryptFile($file1, $_POST['password'], $dir1);
+                                file_put_contents($dir1 . '.crypt', $encrypted_file);
+                            }
+                            if ($_POST['action'] == '6') {
+                                $file2 = file_get_contents($dir1);
+                                $decrypted_file = decryptFile($file2, $_POST['password']);
+                                if (empty($decrypted_file)) echo $messages['wrong_password'];
+                                else {
+                                    file_put_contents(substr($dir1, 0, -6), $decrypted_file);
+                                    unlink($dir1);
+                                }
+                            }
                         } else {
                             echo $messages['wrong_password'];
                         }
