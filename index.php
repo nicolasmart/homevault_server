@@ -15,6 +15,7 @@ require('res/translations/' . $_COOKIE["language"] . '.php');
 <head>
     <meta charset="UTF-8">
     <title><?php echo $messages['home_files']; ?> - HomeVault</title>
+    <link rel="shortcut icon" type="image/x-icon" href="res/drawables/favicon.ico"/>
     <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css"> 
     <link rel="stylesheet" href="res/stylesheets/main.css?v=5">
     <style type="text/css">

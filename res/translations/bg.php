@@ -77,6 +77,7 @@ $messages['encrypt'] = "Криптиране";
 $messages['decrypt'] = "Декриптиране";
 $messages['confirm'] = "Потвърждаване";
 $messages['empty_folder'] = "Тази папка е празна";
+$messages['download_folder'] = "Изтегляне като ZIP";
 
 // Photos
 $messages['photos'] = "Снимки";
@@ -98,5 +99,8 @@ $messages['liked_songs'] = "Любими песни";
 $messages['shuffle'] = "Разбъркване";
 $messages['songs'] = "Песни";
 $messages['albums'] = "Албуми";
+$messages['artists'] = "Изпълнители";
 $messages['upload_song'] = "Качване";
+$messages['invalid_music_file'] = "Грешка: Избраният файл не е mp3 песен.";
+$messages['now_playing'] = "Текуща песен";
 ?>

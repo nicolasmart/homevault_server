@@ -16,6 +16,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <title><?php echo $messages['login']; ?> - HomeVault</title>
+    <link rel="shortcut icon" type="image/x-icon" href="res/drawables/favicon.ico"/>
     <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css">
     <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
     <style type="text/css">

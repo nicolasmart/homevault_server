@@ -117,10 +117,6 @@ else if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true) {
 <div class="wrapper">
 <?php
 $GLOBALS['notes_dir'] = $notes_dir = $_SESSION['folder_loc'] . '/notes' . '/';
-/**$files = glob($notes_dir + '/*.{jpg,png,gif,jpeg}', GLOB_BRACE);
-usort($files, function($a, $b) {
-    return filemtime($b) - filemtime($a);
-});*/
 $exts = array('mn');
 
 $files = array();
@@ -135,7 +131,6 @@ if($handle = opendir($notes_dir)) {
     }
     closedir($handle);
 }
-//echo json_encode($files);
 usort($files, function($x, $y) {
     return filemtime($GLOBALS['notes_dir'] . '/' . $x) < filemtime($GLOBALS['notes_dir'] . '/' . $y);
 });

@@ -42,6 +42,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (password_verify($password, $hashed_password)) {
                             //if (strpos($_POST['directory'], '../') !== false) return;
                             $file = '../' . $folder_location . '/files' . $_POST["directory"];
+                            if (is_dir($file)) {
+                                $zip = new ZipArchive();
+                                $zip->open('temp/file.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+                                $files = new RecursiveIteratorIterator(
+                                    new RecursiveDirectoryIterator($file),
+                                    RecursiveIteratorIterator::LEAVES_ONLY
+                                );
+
+                                foreach ($files as $name => $file_single)
+                                {
+                                    if (!$file_single->isDir())
+                                    {
+                                        $filePath = $file_single->getRealPath();
+                                        $relativePath = substr($filePath, strlen(realpath($file)) + 1);
+                                        $zip->addFile($filePath, $relativePath);
+                                    }
+                                }
+
+                                $zip->close();
+
+                                header('Content-Description: File Transfer');
+                                header('Content-Type: application/octet-stream');
+                                header('Content-Disposition: attachment; filename='.basename($file).'.zip');
+                                header('Content-Transfer-Encoding: binary');
+                                header('Expires: 0');
+                                header('Cache-Control: must-revalidate');
+                                header('Pragma: public');
+                                header('Content-Length: ' . filesize('temp/file.zip'));
+                                readfile('temp/file.zip');
+                                unlink('temp/file.zip');
+                                exit;
+                            }
                             if (substr($file, -6)) {
                                 $file2 = file_get_contents($file);
                                 $decrypted_file = decryptFile($file2, $password);

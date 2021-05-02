@@ -85,6 +85,10 @@ Deny from all
                     fwrite($myfile, $txt);
                     fclose($myfile);
 
+                    $myfile = fopen("users/" . $username . '/music' . "/.htaccess", "w") or die("Unable to open file!");
+                    fwrite($myfile, $txt);
+                    fclose($myfile);
+
                     // Account created; Redirect to login page
                     echo '<script>
                     alert("' . $messages['account_created'] . '");
@@ -112,6 +116,7 @@ Deny from all
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+    <link rel="shortcut icon" type="image/x-icon" href="res/drawables/favicon.ico"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <link rel="stylesheet" href="res/stylesheets/main.css?v=5">
     <style type="text/css">

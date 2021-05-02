@@ -118,6 +118,39 @@ if($_GET['do'] == 'list') {
 	$res = move_uploaded_file($_FILES['file_data']['tmp_name'], $file.'/'.$_FILES['file_data']['name']);
 	exit;
 } elseif ($_GET['do'] == 'download') {
+	if (is_dir($file)) {
+		$zip = new ZipArchive();
+		$zip->open('temp/file.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+		$files = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($file),
+			RecursiveIteratorIterator::LEAVES_ONLY
+		);
+
+		foreach ($files as $name => $file_single)
+		{
+			if (!$file_single->isDir())
+			{
+				$filePath = $file_single->getRealPath();
+				$relativePath = substr($filePath, strlen(realpath($file)) + 1);
+				$zip->addFile($filePath, $relativePath);
+			}
+		}
+
+		$zip->close();
+
+		header('Content-Description: File Transfer');
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename='.basename($file).'.zip');
+		header('Content-Transfer-Encoding: binary');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length: ' . filesize('temp/file.zip'));
+		readfile('temp/file.zip');
+		unlink('temp/file.zip');
+		exit;
+	}
 	foreach($disallowed_patterns as $pattern)
 		if(fnmatch($pattern, $file))
 			err(403,"Files of this type are not allowed.");
@@ -236,7 +269,7 @@ td.empty { color:#777; font-style: italic; text-align: center;padding:3em 0;}
 .is_dir .size:before {content: "--"; font-size:16px;color:#333;}
 .is_dir .download{visibility: hidden}
 a.delete {display:inline-block;
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADtSURBVHjajFC7DkFREJy9iXg0t+EHRKJDJSqRuIVaJT7AF+jR+xuNRiJyS8WlRaHWeOU+kBy7eyKhs8lkJrOzZ3OWzMAD15gxYhB+yzAm0ndez+eYMYLngdkIf2vpSYbCfsNkOx07n8kgWa1UpptNII5VR/M56Nyt6Qq33bbhQsHy6aR0WSyEyEmiCG6vR2ffB65X4HCwYC2e9CTjJGGok4/7Hcjl+ImLBWv1uCRDu3peV5eGQ2C5/P1zq4X9dGpXP+LYhmYz4HbDMQgUosWTnmQoKKf0htVKBZvtFsx6S9bm48ktaV3EXwd/CzAAVjt+gHT5me0AAAAASUVORK5CYII=) no-repeat scroll 0 2px;
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADtSURBVHjajFC7DkFREJy9iXg0t+EHRKJDJSqRuIVaJT7AF+jR+xuNRiJyS8WlRaHWeOU+kBy7eyKhs8lkJrOzZ3OWzMAD15gxYhB+yzAm0ndez+eYMYLngdkIf2vpSYbCfsNkOx07n8kgWa1UpptNII5VR/M56Nyt6Qq33bbhQsHy6aR0WSyEyEmiCG6vR2ffB65X4HCwYC2e9CTjJGGok4/7Hcjl+ImLBWv1uCRDu3peV5eGQ2C5/P1zq4X9dGpXP+LYhmYz4HbDMQgUosWTnmQoKKf0htVKBZvtFsx6S9bm48ktaV3EXwd/CzAAVjt+gHT5me0AAAAASUVORK5CYII=) no-repeat scroll 0 8px;
 	color:#d00;	margin-left: 15px;font-size:16px;padding:0 0 0 13px;
 }
 .name {
@@ -336,6 +369,7 @@ $(function(){
 			list();
 		},'json');
 		$dir.val('');
+		list();
 		return false;
 	});
 <?php if($allow_upload): ?>
@@ -412,7 +446,7 @@ $(function(){
 			$tbody.empty();
 			$('#breadcrumb').empty().html(renderBreadcrumbs(hashval));
 			if(data.success) {
-				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><div class="btn-group dropright" id="0" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'0\').classList.contains(\'show\')) { location.href = \'#%2F..\'; }"><?php echo $messages['user_root']; ?></a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#%2F.."><?php echo $messages['open_folder']; ?></a></div></div></td><td data-sort="0"></td><td data-sort="0"></td><td></td><td></td></tr>');
+				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><div class="btn-group dropright" id="0" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'0\').classList.contains(\'show\')) { location.href = \'#%2F..\'; }"><?php echo $messages['user_root']; ?></a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#%2F.."><?php echo $messages['open_folder']; ?></a><!--<a href="?do=download&file=%2F.." class="dropdown-item"><?php echo $messages['download_folder']; ?></a>--></div></div></td><td data-sort="0"></td><td data-sort="0"></td><td></td><td></td></tr>');
 				//console.log(hashval);
 				$.each(data.results,function(k,v){
 					$tbody.append(renderFileRow(v));
@@ -429,8 +463,8 @@ $(function(){
 	function renderFileRow(data) {
 		var $link;
 		var shortFilePath = (data.path).substr((data.path).includes('../') ? (data.path).indexOf('../') + 2 : (data.path).split('/', 2).join('/').length + 1);
-		if (!data.is_dir) $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#" class="name' + (data.name.endsWith('.crypt') ? ' encrypted-file' : '') + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { ' + (data.name.endsWith('.crypt') ? 'window.parent.fileCrypt(\'7\', \'' + shortFilePath + '\', global_list);' : 'location.href = \'?do=download&file=' + encodeURIComponent(data.path) + '\';') + ' }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="?do=download&file=' + encodeURIComponent(data.path) + '"><b><?php echo $messages['download_u']; ?></b></a><a class="dropdown-item" href="javascript:void(0);" onclick="window.parent.fileCrypt(\'' + (data.name.endsWith('.crypt') ? '6' : '5') + '\', \'' + shortFilePath + '\', global_list)">' + (data.name.endsWith('.crypt') ? '<?php echo $messages['decrypt']; ?>' : '<?php echo $messages['encrypt']; ?>') + '</a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
-		else $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { location.href = \'#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '\'; }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '"><?php echo $messages['open_folder']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
+		if (!data.is_dir) $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#" class="name' + (data.name.endsWith('.crypt') ? ' encrypted-file' : '') + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { ' + (data.name.endsWith('.crypt') ? 'window.parent.fileCrypt(\'7\', \'' + shortFilePath + '\', global_list);' : 'location.href = \'?do=download&file=' + encodeURIComponent(data.path) + '\';') + ' }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#" onclick="' + (data.name.endsWith('.crypt') ? 'window.parent.fileCrypt(\'7\', \'' + shortFilePath + '\', global_list);' : 'location.href = \'?do=download&file=' + encodeURIComponent(data.path) + '\';') + '"><b><?php echo $messages['download_u']; ?></b></a><a class="dropdown-item" href="javascript:void(0);" onclick="window.parent.fileCrypt(\'' + (data.name.endsWith('.crypt') ? '6' : '5') + '\', \'' + shortFilePath + '\', global_list)">' + (data.name.endsWith('.crypt') ? '<?php echo $messages['decrypt']; ?>' : '<?php echo $messages['encrypt']; ?>') + '</a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
+		else $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { location.href = \'#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '\'; }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '"><?php echo $messages['open_folder']; ?></a><a href="?do=download&file=' + encodeURIComponent(data.path) + '" class="dropdown-item"><?php echo $messages['download_folder']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
 		var $dl_link = $('<a/>').attr('href','?do=download&file='+ encodeURIComponent(data.path))
 			.addClass('download').text(<?php echo "'" . $messages['download'] . "'"; ?>);
 		var $delete_link = $('<a href="#" />').attr('data-file',data.path).addClass('delete').text(<?php echo "'" . $messages['delete'] . "'"; ?>);
