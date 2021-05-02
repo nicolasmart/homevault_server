@@ -76,6 +76,7 @@ $messages['password_prompt'] = "Моля, въведете своята паро
 $messages['encrypt'] = "Криптиране";
 $messages['decrypt'] = "Декриптиране";
 $messages['confirm'] = "Потвърждаване";
+$messages['empty_folder'] = "Тази папка е празна";
 
 // Photos
 $messages['photos'] = "Снимки";

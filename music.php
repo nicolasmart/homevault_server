@@ -1,5 +1,6 @@
 <?php
 include 'common_vars.inc';
+include 'res/libraries/getid3/getid3.php';
 if(!isset($_COOKIE["language"])) { 
   setcookie("language", "en", time() + (86400 * 365), "/");
   $_COOKIE["language"] = "en";
@@ -11,8 +12,6 @@ require('res/translations/' . $_COOKIE["language"] . '.php');
 <head>
     <meta charset="UTF-8">
     <title>HomeVault</title>
-    <!-- TODO: Switch to local instead of CDN cause Seray would be mad otherwise; 
-         TODO 2: Add a common header -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css"> 
     <link rel="stylesheet" href="res/stylesheets/main.css?v=3">

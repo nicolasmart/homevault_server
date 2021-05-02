@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $sql = "INSERT INTO users (name, password, user_role, folder_location) VALUES (?, ?, ?, ?)";
         
-        if (mkdir("users/" . $username) && mkdir("users/" . $username . '/files') && mkdir("users/" . $username . '/photos') && mkdir("users/" . $username . '/music')) {
+        if (mkdir("users/" . $username) && mkdir("users/" . $username . '/files') && mkdir("users/" . $username . '/photos') && mkdir('users/' . $username . '/notes') && mkdir("users/" . $username . '/music')) {
             if ($stmt = mysqli_prepare($link, $sql)) {
                 mysqli_stmt_bind_param($stmt, "ssis", $param_username, $param_password, $param_user_role, $param_folder_location);
                 $param_username = $username;

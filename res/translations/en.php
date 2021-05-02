@@ -76,6 +76,7 @@ $messages['password_prompt'] = "Please enter your password to confirm the operat
 $messages['encrypt'] = "Encrypt";
 $messages['decrypt'] = "Decrypt";
 $messages['confirm'] = "Confirm";
+$messages['empty_folder'] = "This folder is empty";
 
 // Photos
 $messages['photos'] = "Photos";

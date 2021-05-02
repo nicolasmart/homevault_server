@@ -11,7 +11,6 @@ require('res/translations/' . $_COOKIE["language"] . '.php');
 <head>
     <meta charset="UTF-8">
     <title>HomeVault</title>
-    <!-- TODO: Add a common header -->
     <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css"> 
     <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
     <style type="text/css">

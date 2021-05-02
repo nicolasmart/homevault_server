@@ -417,7 +417,7 @@ $(function(){
 				$.each(data.results,function(k,v){
 					$tbody.append(renderFileRow(v));
 				});
-				!data.results.length && $tbody.append('<tr><td class="empty" colspan=5>This folder is empty</td></tr>')
+				!data.results.length && $tbody.append('<tr><td class="empty" colspan=5><?php echo $messages['empty_folder']; ?></td></tr>')
 				data.is_writable ? $('body').removeClass('no_write') : $('body').addClass('no_write');
 			} else {
 				console.warn(data.error.msg);
