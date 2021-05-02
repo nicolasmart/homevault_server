@@ -3,7 +3,10 @@ if (file_exists('common_vars.inc')) {
     header("location: index.php");
     exit;
 }
-if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+if(!isset($_COOKIE["language"])) { 
+    setcookie("language", "en", time() + (86400 * 365), "/");
+    $_COOKIE["language"] = "en";
+}
 require('res/translations/' . $_COOKIE["language"] . '.php');
 
 $user_role = 1;

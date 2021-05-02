@@ -4,7 +4,10 @@ if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true || $_SESSIO
     header('location: login.php');
 }
 include 'common_vars.inc';
-if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+if(!isset($_COOKIE["language"])) { 
+    setcookie("language", "en", time() + (86400 * 365), "/");
+    $_COOKIE["language"] = "en";
+}
 require('res/translations/' . $_COOKIE["language"] . '.php');
 
 $user_role = 1;

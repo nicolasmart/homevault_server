@@ -4,7 +4,10 @@ if (!file_exists('common_vars.inc')) {
     exit;
 }
 include 'common_vars.inc';
-if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+if(!isset($_COOKIE["language"])) {
+    header('location: login.php');
+    exit;
+}
 require('res/translations/' . $_COOKIE["language"] . '.php');
 ?>
 <!DOCTYPE html>
@@ -66,8 +69,9 @@ require('res/translations/' . $_COOKIE["language"] . '.php');
 <?php
 session_start();
 
-if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true) {
+if (!isset($_SESSION["logged_in"]) || empty($_SESSION["logged_in"]) || $_SESSION['logged_in'] != true) {
     header('location: login.php');
+    exit;
 }
 
 if (!empty($_FILES['file']['name'])) {

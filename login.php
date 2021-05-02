@@ -4,7 +4,10 @@ if (!file_exists('common_vars.inc')) {
     exit;
 }
 include 'common_vars.inc';
-if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+if(!isset($_COOKIE["language"])) { 
+    setcookie("language", "en", time() + (86400 * 365), "/");
+    $_COOKIE["language"] = "en";
+}
 require('res/translations/' . $_COOKIE["language"] . '.php');
 session_start();
 ?>

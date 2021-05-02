@@ -3,9 +3,21 @@
 Simple PHP File Manager
 Copyright John Campbell (jcampbell1)
 
-Liscense: MIT
+License: MIT
+*********************************
+The HomeVault File Manager
+Nicola Nicolov (nicolasmart)
+
+(includes changes to UI behavior,
+more file management options, AES-256
+file encryption support and more)
+
+License: GPLv3 
 ********************************/
-if(!isset($_COOKIE["language"])) setcookie("language", "en", time() + (86400 * 365), "/");
+if(!isset($_COOKIE["language"])) { 
+    setcookie("language", "en", time() + (86400 * 365), "/");
+    $_COOKIE["language"] = "en";
+}
 require('res/translations/' . $_COOKIE["language"] . '.php');
 session_start();
 
@@ -13,37 +25,14 @@ if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true) {
     header('location: login.php');
 }
 
-//Disable error report for undefined superglobals
 error_reporting( error_reporting() & ~E_NOTICE );
 
-//Security options
-$allow_delete = true; // Set to false to disable delete button and delete POST request.
-$allow_upload = true; // Set to true to allow upload files
-$allow_create_folder = true; // Set to false to disable folder creation
-$allow_direct_link = true; // Set to false to only allow downloads and not direct link
-$allow_show_folders = true; // Set to false to hide all subdirectories
+$allow_delete = true;
+$allow_upload = true;
+$allow_create_folder = true;
+$disallowed_patterns = ['*.php'];
+$hidden_patterns = ['*.php','.*'];
 
-$disallowed_patterns = ['*.php'];  // must be an array.  Matching files not allowed to be uploaded
-$hidden_patterns = ['*.php','.*']; // Matching files hidden in directory index
-
-$PASSWORD = '';  // Set the password, to access the file manager... (optional)
-
-if($PASSWORD) {
-
-	session_start();
-	if(!$_SESSION['_sfm_allowed']) {
-		// sha1, and random bytes to thwart timing attacks.  Not meant as secure hashing.
-		$t = bin2hex(openssl_random_pseudo_bytes(10));
-		if($_POST['p'] && sha1($t.$_POST['p']) === sha1($t.$PASSWORD)) {
-			$_SESSION['_sfm_allowed'] = true;
-			header('Location: ?');
-		}
-		echo '<html><body><form action=? method=post>PASSWORD:<input type=password name=p autofocus/></form></body></html>';
-		exit;
-	}
-}
-
-// must be in UTF-8 or `basename` doesn't work
 setlocale(LC_ALL,'en_US.UTF-8');
 
 $tmp_dir = dirname($_SERVER['SCRIPT_FILENAME']);
@@ -77,7 +66,7 @@ if($_GET['do'] == 'list') {
 		$directory = $file;
 		$result = [];
 		$files = array_diff(scandir($directory), ['.','..']);
-		foreach ($files as $entry) if (!is_entry_ignored($entry, $allow_show_folders, $hidden_patterns)) {
+		foreach ($files as $entry) if (!is_entry_ignored($entry, $hidden_patterns)) {
 			$i = $directory . '/' . $entry;
 			$stat = stat($i);
 			$result[] = [
@@ -114,7 +103,6 @@ if($_GET['do'] == 'list') {
 	}
 	exit;
 } elseif ($_POST['do'] == 'mkdir' && $allow_create_folder) {
-	// don't allow actions outside root. we also filter out slashes to catch args like './../outside'
 	$dir = $_POST['name'];
 	$dir = str_replace('/', '', $dir);
 	if(substr($dir, 0, 2) === '..')
@@ -145,14 +133,11 @@ if($_GET['do'] == 'list') {
 	exit;
 }
 
-function is_entry_ignored($entry, $allow_show_folders, $hidden_patterns) {
+function is_entry_ignored($entry, $hidden_patterns) {
 	if ($entry === basename(__FILE__)) {
 		return true;
 	}
 
-	if (is_dir($entry) && !$allow_show_folders) {
-		return true;
-	}
 	foreach($hidden_patterns as $pattern) {
 		if(fnmatch($pattern,$entry)) {
 			return true;
@@ -184,7 +169,6 @@ function is_recursively_deleteable($d) {
 	return true;
 }
 
-// from: http://php.net/manual/en/function.realpath.php#84012
 function get_absolute_path($path) {
         $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
         $parts = explode(DIRECTORY_SEPARATOR, $path);
@@ -428,7 +412,7 @@ $(function(){
 			$tbody.empty();
 			$('#breadcrumb').empty().html(renderBreadcrumbs(hashval));
 			if(data.success) {
-				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><div class="btn-group dropright" id="0" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'0\').classList.contains(\'show\')) { location.href = \'#%2F..\'; }"><?php echo $messages['user_root']; ?></a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#%2F.."><?php echo $messages['open_folder']; ?></a></div></div></td><td data-sort="0"></td><td data-sort="0"></td><td></td></tr>');
+				if (hashval == "")	$tbody.append('<tr class="is_dir"><td class="first"><div class="btn-group dropright" id="0" style="display: initial;"><a href="#" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'0\').classList.contains(\'show\')) { location.href = \'#%2F..\'; }"><?php echo $messages['user_root']; ?></a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#%2F.."><?php echo $messages['open_folder']; ?></a></div></div></td><td data-sort="0"></td><td data-sort="0"></td><td></td><td></td></tr>');
 				//console.log(hashval);
 				$.each(data.results,function(k,v){
 					$tbody.append(renderFileRow(v));
@@ -447,8 +431,6 @@ $(function(){
 		var shortFilePath = (data.path).substr((data.path).includes('../') ? (data.path).indexOf('../') + 2 : (data.path).split('/', 2).join('/').length + 1);
 		if (!data.is_dir) $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#" class="name' + (data.name.endsWith('.crypt') ? ' encrypted-file' : '') + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { ' + (data.name.endsWith('.crypt') ? 'window.parent.fileCrypt(\'7\', \'' + shortFilePath + '\', global_list);' : 'location.href = \'?do=download&file=' + encodeURIComponent(data.path) + '\';') + ' }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="?do=download&file=' + encodeURIComponent(data.path) + '"><b><?php echo $messages['download_u']; ?></b></a><a class="dropdown-item" href="javascript:void(0);" onclick="window.parent.fileCrypt(\'' + (data.name.endsWith('.crypt') ? '6' : '5') + '\', \'' + shortFilePath + '\', global_list)">' + (data.name.endsWith('.crypt') ? '<?php echo $messages['decrypt']; ?>' : '<?php echo $messages['encrypt']; ?>') + '</a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
 		else $link = '<div class="btn-group dropright" id="' + id_num.toString() + '" style="display: initial;"><a href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '" class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="if (document.getElementById(\'' + id_num.toString() + '\').classList.contains(\'show\')) { location.href = \'#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '\'; }">' + data.name + '</a><div class="dropdown-menu" style="color: #000;"><a class="dropdown-item" href="#' + encodeURIComponent(data.path.replace('<?php echo $_SESSION['folder_loc'] . '/files' . '/'; ?>', '')) + '"><?php echo $messages['open_folder']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'1\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['move_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['move']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'2\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['copy_prompt']; ?>\', \'' + shortFilePath.substr(6, shortFilePath.lastIndexOf('/') - 5) + '\'))"><?php echo $messages['copy']; ?></a><a class="dropdown-item" href="javascript:void(0);" onclick="fileAction(\'4\', \'' + shortFilePath + '\', prompt(\'<?php echo $messages['rename_prompt']; ?>\', \'' + data.name + '\'))"><?php echo $messages['rename']; ?></a><a class="dropdown-item delete delete-dropdown" style="background: none; color: #000; margin-left: 0px; padding: .25rem 1.5rem;" href="#" data-file="' + data.path + '"><?php echo $messages['delete_u']; ?></a></div></div>';
-		var allow_direct_link = <?php echo $allow_direct_link?'true':'false'; ?>;
-        	if (!data.is_dir && !allow_direct_link)  $link.css('pointer-events','none');
 		var $dl_link = $('<a/>').attr('href','?do=download&file='+ encodeURIComponent(data.path))
 			.addClass('download').text(<?php echo "'" . $messages['download'] . "'"; ?>);
 		var $delete_link = $('<a href="#" />').attr('data-file',data.path).addClass('delete').text(<?php echo "'" . $messages['delete'] . "'"; ?>);
