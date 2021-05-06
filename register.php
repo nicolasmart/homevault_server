@@ -100,7 +100,6 @@ Deny from all
                     alert("' . $messages['account_created'] . '");
                     window.location.href = "login.php"
                     </script>';
-                    //header("location: login.php");
                 } else {
                     echo $messages['generic_error'];
                 }
@@ -122,7 +121,7 @@ Deny from all
     <meta charset="UTF-8">
     <title><?php echo $messages['register']; ?></title>
     <link rel="shortcut icon" type="image/x-icon" href="res/drawables/favicon.ico"/>
-    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css?v=2">
     <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
     <style type="text/css">
         .body-overlay {

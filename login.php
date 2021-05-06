@@ -17,7 +17,7 @@ session_start();
     <meta charset="UTF-8">
     <title><?php echo $messages['login']; ?> - HomeVault</title>
     <link rel="shortcut icon" type="image/x-icon" href="res/drawables/favicon.ico"/>
-    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css?v=2">
     <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
     <style type="text/css">
         .body-overlay {

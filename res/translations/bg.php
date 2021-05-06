@@ -39,6 +39,7 @@ $messages['language_switcher'] = "Switch to English?";
 // Home
 $messages['home'] = "Начало";
 $messages['change_password_title'] = "Смяна на парола";
+$messages['disk_space_available_of'] = " свободни от ";
 
 // Files
 $messages['home_files'] = "Файлове";
@@ -103,4 +104,7 @@ $messages['artists'] = "Изпълнители";
 $messages['upload_song'] = "Качване";
 $messages['invalid_music_file'] = "Грешка: Избраният файл не е mp3 песен.";
 $messages['now_playing'] = "Текуща песен";
+$messages['playing_n1'] = "Изпълнява се ";
+$messages['playing_n2'] = " от ";
+$messages['nothing_playing'] = "Нищо не се изпълнява в момента.";
 ?>

@@ -16,8 +16,8 @@ require('res/translations/' . $_COOKIE["language"] . '.php');
     <meta charset="UTF-8">
     <title><?php echo $messages['home_files']; ?> - HomeVault</title>
     <link rel="shortcut icon" type="image/x-icon" href="res/drawables/favicon.ico"/>
-    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css"> 
-    <link rel="stylesheet" href="res/stylesheets/main.css?v=5">
+    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css?v=2"> 
+    <link rel="stylesheet" href="res/stylesheets/main.css?v=6">
     <style type="text/css">
         .body-overlay {
             background: url('res/drawables/homevault_default_backdrop.jpg') no-repeat center center fixed; 
@@ -119,7 +119,10 @@ function getSymbolByQuantity($bytes) {
             <input type="image" src="res/drawables/md_user_circle.svg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
             <div class="dropdown-menu dropdown-menu-right" id="user_nav">
                 <a class="dropdown-item" href="#" onclick="event.preventDefault();"><i><?php echo $_SESSION['username']; ?></i></a>
-                <a class="dropdown-item" href="#" onclick="event.preventDefault();"><i><?php echo getSymbolByQuantity(disk_free_space('.')) . ' out of ' . getSymbolByQuantity(disk_total_space('.')); ?></i></a>
+                <a class="dropdown-item" href="#" onclick="event.preventDefault();"><i><?php echo getSymbolByQuantity(disk_free_space('.')) . ' ' . $messages['disk_space_available_of'] . ' ' . getSymbolByQuantity(disk_total_space('.')); ?></i>
+                <div class="progress" style="height: 3px;">
+                    <div class="progress-bar" role="progressbar" style="width: <?php $spaceUsed = round(((disk_total_space('.') - disk_free_space('.')) / disk_total_space('.'))*100); echo $spaceUsed; ?>%;" aria-valuenow="<?php echo $spaceUsed; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                </div></a>
                 <div class="dropdown-divider"></div>
                 <?php if ($_SESSION['user_role'] == '0') echo '<a class="dropdown-item" href="register.php">' . $messages['register_user'] . '</a>'; ?>
                 <a class="dropdown-item" href="change_password.php"><?php echo $messages['change_password']; ?></a>

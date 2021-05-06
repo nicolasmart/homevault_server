@@ -31,6 +31,9 @@ input[type="radio"]:checked {
     background-color: #187359 !important;
     border-color: #187359 !important;
 }
+.progress-bar {
+    background-color: #17A67E !important;
+}
 .popout-card {
     background: #FFFFFFD3;
     border-radius: 25px;

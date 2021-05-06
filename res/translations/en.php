@@ -39,6 +39,7 @@ $messages['language_switcher'] = "Премини на български?";
 // Home
 $messages['home'] = "Home";
 $messages['change_password_title'] = "Change Password";
+$messages['disk_space_available_of'] = " available of ";
 
 // Files
 $messages['home_files'] = "Files";
@@ -103,4 +104,7 @@ $messages['artists'] = "Artists";
 $messages['upload_song'] = "Upload";
 $messages['invalid_music_file'] = "Error: The selected file is not an mp3 song.";
 $messages['now_playing'] = "Now Playing";
+$messages['playing_n1'] = "Playing ";
+$messages['playing_n2'] = " of ";
+$messages['nothing_playing'] = "Nothing is playing right now.";
 ?>

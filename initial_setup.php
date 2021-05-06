@@ -117,7 +117,7 @@ Deny from all
     <meta charset="UTF-8">
     <title>Sign Up</title>
     <link rel="shortcut icon" type="image/x-icon" href="res/drawables/favicon.ico"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css">
     <link rel="stylesheet" href="res/stylesheets/main.css?v=5">
     <style type="text/css">
         body{ font: 14px sans-serif; }
@@ -126,7 +126,7 @@ Deny from all
 </head>
 <body>
     <div class="wrapper">
-        <h2><?php echo $messages['setup_title']; ?></h2>
+        <h2 style="padding-top: 20px;"><?php echo $messages['setup_title']; ?></h2>
         <p><?php echo $messages['setup_subtitle']; ?></p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             </br>

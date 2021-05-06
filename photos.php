@@ -11,7 +11,7 @@ require('res/translations/' . $_COOKIE["language"] . '.php');
 <head>
     <meta charset="UTF-8">
     <title>HomeVault</title>
-    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css"> 
+    <link rel="stylesheet" href="res/stylesheets/bootstrap.min.css?v=2"> 
     <link rel="stylesheet" href="res/stylesheets/main.css?v=3">
     <style type="text/css">
         .row {
@@ -22,25 +22,20 @@ require('res/translations/' . $_COOKIE["language"] . '.php');
           padding: 0 4px;
         }
 
-        /* Create two equal columns that sits next to each other */
         .column {
-          -ms-flex: 10%; /* IE 10 */
+          -ms-flex: 10%;
           flex: 10%;
           width: 280px;
           height: 280px;
-          
         }
 
         .column img {
           vertical-align: middle;
-          /*margin-top: 4px;
-          margin-bottom: 4px;*/
           min-height:12vw;
           max-height:12vw;
           min-width:12vw;
           max-width:12vw;
           padding: 4px 0px 4px 0px;
-          
           object-fit: cover;
         }
 
@@ -105,7 +100,6 @@ if($handle = opendir($images_dir)) {
     }
     closedir($handle);
 }
-//echo json_encode($files);
 usort($files, function($x, $y) {
     return filemtime($GLOBALS['images_dir'] . '/' . $x) < filemtime($GLOBALS['images_dir'] . '/' . $y);
 });
