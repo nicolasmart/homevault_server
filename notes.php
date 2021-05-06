@@ -1,6 +1,9 @@
 <?php
 include 'common_vars.inc';
-if(!isset($_COOKIE["language"])) { 
+if (isset($_POST['language']) && $_POST['language'] == 'bg') {
+  $_COOKIE["language"] = $_POST['language'];
+}
+else if (!isset($_COOKIE["language"])) { 
   setcookie("language", "en", time() + (86400 * 365), "/");
   $_COOKIE["language"] = "en";
 }

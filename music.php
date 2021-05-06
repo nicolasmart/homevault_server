@@ -1,7 +1,10 @@
 <?php
 include 'common_vars.inc';
 include 'res/libraries/getid3/getid3.php';
-if(!isset($_COOKIE["language"])) { 
+if (isset($_POST['language']) && $_POST['language'] == 'bg') {
+  $_COOKIE["language"] = $_POST['language'];
+}
+else if (!isset($_COOKIE["language"])) { 
   setcookie("language", "en", time() + (86400 * 365), "/");
   $_COOKIE["language"] = "en";
 }
@@ -186,11 +189,19 @@ ob_end_clean();
           margin-top: 22px;
         }
         a {
-          color: #555;
+          <?php 
+            if (isset($_POST['dark_mode']) && $_POST['dark_mode'] == '1') echo 'color: #fff;';
+            else echo 'color: #555;';
+            ?>
         }
         a:hover {
-          color: #000;
+          <?php 
+            if (isset($_POST['dark_mode']) && $_POST['dark_mode'] == '1') echo 'color: #999;';
+            else echo 'color: #000;';
+            ?>
         }
+        <?php 
+            if (isset($_POST['dark_mode']) && $_POST['dark_mode'] == '1') echo 'h3 { color: #fff; }'; ?>
         @media (min-width: 576px) {
           .main_actions_container {
             margin: 0;
