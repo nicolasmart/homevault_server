@@ -25,3 +25,9 @@ Luckily all of that is much easier to do than it sounds.
 - [macOS](https://jasonmccreary.me/articles/install-apache-php-mysql-mac-os-x-catalina/)
 
 After installing the server successfully, you need to enable port forwarding to the default HTTP port on your router. You can learn how to do that [here](https://www.noip.com/support/knowledgebase/general-port-forwarding-guide/). Unless your IP is static (most aren't) using a dynamic DNS service is recommended for your own comfort. One of the most popular free services that offer that is [No-IP](https://www.noip.com/).
+
+### Open API
+
+Developers can take advantage of HomeVault's open API which can easily be integrated into any app. All of the currently available functions are documented in the [`mobile_methods` folder](https://github.com/nicolasmart/homevault_server/blob/main/mobile_methods/readme.txt). You simply need to provide the username and password (and other optional arguments) as a POST request, as described in the linked file.
+
+HomeVault administrators can also feel free to modify the server however they want - as an open source piece of software, modifications are encouraged. One of the simplest mods would be changing the background throughout the web app by simply replacing the image in `res/drawables/homevault_default_backdrop.jpg`.
